@@ -2,6 +2,8 @@
 
 一个简洁优雅的个人博客，基于 [Astro](https://astro.build) 构建。
 
+[Demo](http://demo.zeroblog.halei0v0.dpdns.org/)
+
 ## 特性
 
 - 🎨 **简洁设计** - 清爽的界面，专注于内容

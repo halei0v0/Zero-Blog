@@ -1,0 +1,218 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCategories } from '../lib/posts';
+
+const categories = await getCategories();
+---
+
+<BaseLayout title="分类">
+  <a href="/" class="back-button">
+    <span class="back-arrow"></span>
+    返回首页
+  </a>
+  
+  <section class="categories">
+    <h1 class="page-title">文章分类</h1>
+    
+    <div class="categories-grid">
+      {Object.entries(categories).map(([category, posts]) => (
+        <div class="category-card">
+          <div class="category-header">
+            <h2 class="category-name">{category}</h2>
+            <span class="category-count">{posts.length} 篇</span>
+          </div>
+          
+          <ul class="category-posts">
+            {posts.slice(0, 5).map((post) => (
+              <li class="category-post-item">
+                <a href={`/post/${post.slug}/`} class="category-post-link">
+                  <span class="post-title">{post.frontmatter.title}</span>
+                  <span class="post-date">{post.frontmatter.date}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          
+          {posts.length > 5 && (
+            <div class="view-all">
+              <span>还有 {posts.length - 5} 篇文章...</span>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+    text-decoration: none;
+  }
+
+  .back-button:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px var(--shadow);
+    transform: translateX(-4px);
+  }
+
+  .back-arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 6px solid currentColor;
+    transition: transform 0.3s ease;
+  }
+
+  .back-button:hover .back-arrow {
+    transform: translateX(-3px);
+  }
+
+  .categories {
+    padding: 2rem 0;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text);
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .category-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: all 0.3s ease;
+  }
+
+  .category-card:hover {
+    box-shadow: 0 8px 24px var(--shadow);
+    transform: translateY(-2px);
+  }
+
+  .category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .category-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .category-count {
+    font-size: 0.875rem;
+    color: var(--muted);
+    background: var(--bg-secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+  }
+
+  .category-posts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .category-post-item {
+    margin-bottom: 0.75rem;
+  }
+
+  .category-post-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .category-post-link:hover {
+    background: var(--bg-secondary);
+  }
+
+  .post-title {
+    font-size: 0.9rem;
+    color: var(--text);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .category-post-link:hover .post-title {
+    color: var(--accent);
+  }
+
+  .post-date {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .view-all {
+    text-align: center;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  @media (max-width: 640px) {
+    .page-title {
+      font-size: 1.5rem;
+    }
+
+    .categories-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .category-card {
+      padding: 1rem;
+    }
+
+    .category-post-link {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+
+    .post-date {
+      margin-left: 0;
+    }
+  }
+</style>

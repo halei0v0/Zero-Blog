@@ -1,0 +1,190 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getArchives } from '../lib/posts';
+
+const archives = await getArchives();
+const monthNames = ['', '一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+---
+
+<BaseLayout title="归档">
+  <a href="/" class="back-button">
+    <span class="back-arrow"></span>
+    返回首页
+  </a>
+  
+  <section class="archives">
+    <h1 class="page-title">文章归档</h1>
+    
+    {Object.entries(archives).map(([year, months]) => (
+      <div class="year-section">
+        <h2 class="year-title">{year}年</h2>
+        
+        {Object.entries(months).map(([month, posts]) => (
+          <div class="month-section">
+            <h3 class="month-title">{monthNames[parseInt(month)]}</h3>
+            
+            <ul class="archive-list">
+              {posts.map((post) => (
+                <li class="archive-item">
+                  <a href={`/post/${post.slug}/`} class="archive-link">
+                    <span class="archive-date">{post.frontmatter.date}</span>
+                    <span class="archive-title">{post.frontmatter.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+    text-decoration: none;
+  }
+
+  .back-button:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px var(--shadow);
+    transform: translateX(-4px);
+  }
+
+  .back-arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 6px solid currentColor;
+    transition: transform 0.3s ease;
+  }
+
+  .back-button:hover .back-arrow {
+    transform: translateX(-3px);
+  }
+
+  .archives {
+    padding: 2rem 0;
+  }
+
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text);
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .year-section {
+    margin-bottom: 3rem;
+  }
+
+  .year-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+    border-left: 4px solid var(--accent);
+  }
+
+  .month-section {
+    margin-bottom: 2rem;
+    margin-left: 1rem;
+  }
+
+  .month-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 1rem;
+    opacity: 0.8;
+  }
+
+  .archive-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .archive-item {
+    margin-bottom: 0.75rem;
+  }
+
+  .archive-link {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  .archive-link:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px var(--shadow);
+    transform: translateX(4px);
+  }
+
+  .archive-date {
+    flex-shrink: 0;
+    font-size: 0.875rem;
+    color: var(--muted);
+    background: var(--bg-secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+  }
+
+  .archive-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .archive-link:hover .archive-title {
+    color: var(--accent);
+  }
+
+  @media (max-width: 640px) {
+    .page-title {
+      font-size: 1.5rem;
+    }
+
+    .year-title {
+      font-size: 1.5rem;
+    }
+
+    .month-title {
+      font-size: 1.125rem;
+    }
+
+    .archive-link {
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+    }
+
+    .month-section {
+      margin-left: 0;
+    }
+  }
+</style>

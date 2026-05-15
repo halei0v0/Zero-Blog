@@ -1,0 +1,364 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getAllPosts } from '../lib/posts';
+import { getConfig } from '../lib/config';
+
+const posts = await getAllPosts();
+const config = getConfig();
+---
+
+<BaseLayout title="Blog">
+  <section class="posts-section">
+    <div class="section-header">
+      <h2 class="section-title">最新文章</h2>
+      <div class="view-toggle">
+        <button class="toggle-btn active" id="list-view" title="列表视图">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+        </button>
+        <button class="toggle-btn" id="grid-view" title="网格视图">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <ul class="post-list" id="post-list">
+      {posts.map((post) => (
+        <li class="post-item">
+          <a href={`/post/${post.slug}/`} class="post-link">
+            {post.frontmatter.cover && (
+              <div class="post-cover">
+                <img src={post.frontmatter.cover} alt={post.frontmatter.title} loading="lazy" />
+              </div>
+            )}
+            <div class="post-content">
+              <h3 class="post-title">{post.frontmatter.title}</h3>
+              {post.frontmatter.description && (
+                <p class="post-description">{post.frontmatter.description}</p>
+              )}
+              <div class="post-meta">
+                <time datetime={post.frontmatter.date}>{post.frontmatter.date}</time>
+                <span class="reading-time">{post.readingTime} 分钟阅读</span>
+              </div>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="hero">
+    <div class="avatar">
+      {config.avatar.useImage && config.avatar.imageUrl ? (
+        <img src={config.avatar.imageUrl} alt={config.site.author} class="avatar-image" />
+      ) : (
+        <div class="avatar-placeholder">{config.avatar.text}</div>
+      )}
+    </div>
+    <h1 class="hero-title">{config.site.title}</h1>
+    <p class="hero-description">{config.site.description}</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-number">{posts.length}</span>
+        <span class="stat-label">篇文章</span>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 3rem 0 4rem;
+  }
+
+  .avatar {
+    margin-bottom: 1.5rem;
+  }
+
+  .avatar-placeholder {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 8px 30px var(--shadow);
+  }
+
+  .avatar-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto;
+    display: block;
+    box-shadow: 0 8px 30px var(--shadow);
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  .hero-description {
+    font-size: 1.125rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .stat-number {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .posts-section {
+    margin-top: 2rem;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--border);
+    margin: 0;
+  }
+
+  .view-toggle {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .toggle-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.3s ease;
+  }
+
+  .toggle-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .toggle-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    transition: all 0.3s ease;
+  }
+
+  .post-list.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .post-list.grid .post-item {
+    margin-bottom: 0;
+  }
+
+  .post-list.grid .post-link {
+    height: 100%;
+  }
+
+  .post-list.grid .post-cover img {
+    height: 180px;
+  }
+
+  .post-item {
+    margin-bottom: 1rem;
+  }
+
+  .post-link {
+    display: block;
+    padding: 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  .post-link:hover {
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px var(--shadow);
+    transform: translateY(-2px);
+  }
+
+  .post-cover {
+    margin: -1.5rem -1.5rem 1rem -1.5rem;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .post-cover img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .post-link:hover .post-cover img {
+    transform: scale(1.05);
+  }
+
+  .post-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .post-link:hover .post-title {
+    color: var(--accent);
+  }
+
+  .post-description {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .post-meta time {
+    font-size: 0.875rem;
+    color: var(--muted);
+    background: var(--bg-secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+  }
+
+  .reading-time {
+    font-size: 0.875rem;
+    color: var(--muted);
+    background: var(--bg-secondary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding: 2rem 0 3rem;
+    }
+
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-description {
+      font-size: 1rem;
+    }
+
+    .avatar-placeholder {
+      width: 80px;
+      height: 80px;
+      font-size: 2rem;
+    }
+
+    .post-link {
+      padding: 1rem;
+    }
+
+    .post-title {
+      font-size: 1.125rem;
+    }
+  }
+</style>
+
+<script>
+  const listViewBtn = document.getElementById('list-view');
+  const gridViewBtn = document.getElementById('grid-view');
+  const postList = document.getElementById('post-list');
+
+  const savedView = localStorage.getItem('post-view') || 'list';
+  if (savedView === 'grid') {
+    postList.classList.add('grid');
+    gridViewBtn.classList.add('active');
+    listViewBtn.classList.remove('active');
+  }
+
+  listViewBtn.addEventListener('click', () => {
+    postList.classList.remove('grid');
+    listViewBtn.classList.add('active');
+    gridViewBtn.classList.remove('active');
+    localStorage.setItem('post-view', 'list');
+  });
+
+  gridViewBtn.addEventListener('click', () => {
+    postList.classList.add('grid');
+    gridViewBtn.classList.add('active');
+    listViewBtn.classList.remove('active');
+    localStorage.setItem('post-view', 'grid');
+  });
+</script>

@@ -1,0 +1,479 @@
+---
+import { getConfig } from '../lib/config';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description } = Astro.props;
+const config = getConfig();
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description ?? 'A minimal blog'} />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
+
+      :root {
+        --bg: #f8f9fa;
+        --bg-secondary: #e9ecef;
+        --text: #1a1a2e;
+        --muted: #6b7280;
+        --border: #e5e7eb;
+        --accent: #4361ee;
+        --accent-hover: #3a56d4;
+        --card: #ffffff;
+        --shadow: rgba(0, 0, 0, 0.08);
+      }
+
+      [data-theme="dark"] {
+        --bg: #0f172a;
+        --bg-secondary: #1e293b;
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --border: #334155;
+        --accent: #60a5fa;
+        --accent-hover: #3b82f6;
+        --card: #1e293b;
+        --shadow: rgba(0, 0, 0, 0.3);
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        line-height: 1.8;
+        color: var(--text);
+        background: var(--bg);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      header {
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        backdrop-filter: blur(10px);
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      .logo {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text);
+        text-decoration: none;
+        background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .logo-image {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--accent);
+      }
+
+      .theme-toggle {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+        color: var(--text);
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+      }
+
+      .theme-toggle:hover {
+        border-color: var(--accent);
+      }
+
+      main {
+        flex: 1;
+        padding: 3rem 0;
+      }
+
+      footer {
+        background: var(--card);
+        border-top: 1px solid var(--border);
+        padding: 2rem 0;
+        margin-top: auto;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.875rem;
+      }
+
+      .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .footer-links a {
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-links a:hover {
+        color: var(--accent);
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      a:hover {
+        color: var(--accent-hover);
+      }
+
+      h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.5rem;
+        color: var(--text);
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 2.5rem 0 1rem;
+        color: var(--text);
+      }
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 2rem 0 0.75rem;
+        color: var(--text);
+      }
+
+      p {
+        margin-bottom: 1.25rem;
+        color: var(--text);
+        opacity: 0.85;
+      }
+
+      code {
+        font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+        background: var(--bg-secondary);
+        padding: 0.2em 0.5em;
+        border-radius: 6px;
+        font-size: 0.875em;
+        border: 1px solid var(--border);
+      }
+
+      pre {
+        background: var(--bg-secondary);
+        color: var(--text);
+        padding: 1.5rem;
+        border-radius: 12px;
+        overflow-x: auto;
+        margin: 2rem 0;
+        box-shadow: 0 4px 20px var(--shadow);
+        border: 1px solid var(--border);
+      }
+
+      pre code {
+        background: none;
+        padding: 0;
+        font-size: 0.9rem;
+        color: inherit;
+        line-height: 1.6;
+        border: none;
+      }
+
+      ul, ol {
+        padding-left: 1.5rem;
+        margin-bottom: 1.25rem;
+        color: var(--text);
+        opacity: 0.85;
+      }
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+
+      blockquote {
+        border-left: 4px solid var(--accent);
+        background: var(--bg-secondary);
+        padding: 1rem 1.5rem;
+        margin: 2rem 0;
+        border-radius: 0 12px 12px 0;
+        color: var(--muted);
+        font-style: normal;
+      }
+
+      hr {
+        border: none;
+        height: 1px;
+        background: var(--border);
+        margin: 3rem 0;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px var(--shadow);
+      }
+
+      .nav-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px var(--shadow);
+      }
+
+      .nav-back:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+        box-shadow: 0 4px 12px var(--shadow);
+      }
+
+      .nav-back::before {
+        content: '';
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-right: 6px solid currentColor;
+        transition: transform 0.3s ease;
+      }
+
+      .nav-back:hover::before {
+        transform: translateX(-3px);
+      }
+
+      time {
+        color: var(--muted);
+        font-size: 0.875rem;
+      }
+
+      .meta {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .title-date {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .back-to-top {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 48px;
+        height: 48px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px var(--shadow);
+        transition: all 0.3s ease;
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .back-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .back-to-top:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+      }
+
+      .back-to-top::before {
+        content: '';
+        width: 12px;
+        height: 12px;
+        border-left: 2px solid var(--text);
+        border-top: 2px solid var(--text);
+        transform: rotate(45deg) translateY(2px);
+      }
+
+      @media (max-width: 640px) {
+        .header-content {
+          padding: 0 1rem;
+        }
+
+        .nav-links {
+          gap: 1rem;
+        }
+
+        h1 {
+          font-size: 1.75rem;
+        }
+
+        pre {
+          padding: 1rem;
+          border-radius: 8px;
+        }
+
+        .back-to-top {
+          bottom: 1rem;
+          right: 1rem;
+          width: 40px;
+          height: 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <a href="/" class="logo">
+          {config.logo.useImage && config.logo.imageUrl ? (
+            <>
+              <img src={config.logo.imageUrl} alt="Logo" class="logo-image" />
+              <span>{config.site.title}</span>
+            </>
+          ) : (
+            <span>{config.site.title}</span>
+          )}
+        </a>
+        <nav class="nav-links">
+          {config.navigation.map((item) => (
+            <a href={item.url}>{item.name}</a>
+          ))}
+          <button class="theme-toggle" id="theme-toggle">切换主题</button>
+        </nav>
+      </div>
+    </header>
+    
+    <main>
+      <div class="container">
+        <slot />
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-links">
+          {config.navigation.map((item) => (
+            <a href={item.url}>{item.name}</a>
+          ))}
+          {config.footer.showRSS && <a href="/rss.xml">RSS</a>}
+        </div>
+        <p>{config.footer.copyright}</p>
+      </div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top"></div>
+
+    <script>
+      const themeToggle = document.getElementById('theme-toggle');
+      const backToTop = document.getElementById('back-to-top');
+      
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+
+      themeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+      });
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            if (window.scrollY > 300) {
+              backToTop.classList.add('visible');
+            } else {
+              backToTop.classList.remove('visible');
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+
+      backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    </script>
+  </body>
+</html>

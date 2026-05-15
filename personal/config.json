@@ -1,0 +1,49 @@
+{
+  "site": {
+    "title": "Zero Blog",
+    "description": "A simple and elegant personal blog built with Astro",
+    "url": "https://your-site.vercel.app",
+    "author": "Your Name",
+    "email": "your-email@example.com"
+  },
+  "social": {
+    "github": "https://github.com/halei0v0",
+    "twitter": "",
+    "bilibili": "",
+    "email": "your-email@example.com"
+  },
+  "navigation": [
+    { "name": "首页", "url": "/" },
+    { "name": "分类", "url": "/categories" },
+    { "name": "归档", "url": "/archives" },
+    { "name": "友链", "url": "/friends" },
+    { "name": "关于", "url": "/about" }
+  ],
+  "footer": {
+    "copyright": "Powered by Astro & Zero Blog",
+    "showRSS": true
+  },
+  "friends": [
+    {
+      "name": "示例友链1",
+      "url": "https://example.com",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=1",
+      "description": "这是一个示例友链描述"
+    },
+    {
+      "name": "示例友链2",
+      "url": "https://example.com",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=2",
+      "description": "这是另一个示例友链描述"
+    }
+  ],
+  "avatar": {
+    "text": "B",
+    "useImage": true,
+    "imageUrl": "/images/myself.png"
+  },
+  "logo": {
+    "useImage": true,
+    "imageUrl": "/images/logo.png"
+  }
+}
